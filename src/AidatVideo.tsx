@@ -1352,9 +1352,9 @@ export const AidatVideo: React.FC = () => {
   return (
     <AbsoluteFill
       style={{
-        backgroundColor: "#FFFFFF",
+        backgroundColor: "#ffffff",
         overflow: "hidden",
-        fontFamily: FONT_BASLIK,
+        fontFamily: FONT_BASLIK
       }}
     >
       <NoktaliZemin />

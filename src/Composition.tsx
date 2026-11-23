@@ -16,6 +16,7 @@ import { Sahne5Yorum } from "./sahneler/Sahne5Yorum";
 import { Sahne6Rehber } from "./sahneler/Sahne6Rehber";
 import { AIDAT_TOPLAM_KARE, AidatVideo } from "./AidatVideo";
 import { FONT_BASLIK } from "./tema";
+import { FAHIS_TOPLAM_KARE, FahisAidatVideo } from "./aidat2/video";
 import {
   ekranSarsintisi,
   FPS,
@@ -33,7 +34,7 @@ export const EdevletParaVideo: React.FC = () => {
       style={{
         backgroundColor: "#FFFFFF",
         overflow: "hidden",
-        fontFamily: FONT_BASLIK,
+        fontFamily: FONT_BASLIK
       }}
     >
       <NoktaliZemin />
@@ -117,6 +118,14 @@ export const MyComposition: React.FC = () => {
         id="EdevletParaReel"
         component={EdevletParaVideo}
         durationInFrames={TOPLAM_KARE}
+        fps={FPS}
+        width={1080}
+        height={1920}
+      />
+      <Composition
+        id="FahisAidatItiraz"
+        component={FahisAidatVideo}
+        durationInFrames={FAHIS_TOPLAM_KARE}
         fps={FPS}
         width={1080}
         height={1920}

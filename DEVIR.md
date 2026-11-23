@@ -65,8 +65,8 @@ npm run render:aidat                                  # ciktilar/fahis-aidat-iti
 npm run render -- AidatReel /tmp/test.mp4 --frames=0-89  # serbest render
 ```
 
-İki kompozisyon: `EdevletParaReel` (756 kare / 25,2 sn) ve `AidatReel`
-(1080×1920, 30 fps). Stil kuralları `STIL.md`, sahne tablosu ve paylaşım
+Üç kompozisyon: `EdevletParaReel` (756 kare / 25,2 sn), `AidatReel`
+(654 kare / 21,8 sn) ve `FahisAidatItiraz` (612 kare / 20,4 sn). Stil kuralları `STIL.md`, sahne tablosu ve paylaşım
 metinleri `SAHNE_PLANI.md` içinde.
 
 ## Durum
@@ -78,3 +78,41 @@ metinleri `SAHNE_PLANI.md` içinde.
 - `public/` altındaki seslendirme ve efekt dosyaları **orijinal**; yeni bir video
   üretilirse senaryo + seslendirme + `kelimeler.json` / `genlik.json` /
   `zamanlama.ts` (kelime zamanlamaları) yeniden üretilmeli.
+
+## Fahiş aidat kısa reels'i (`FahisAidatItiraz`)
+
+Senaryo: "aidatlar kirayla yarışıyorsa yönetim kafasına göre belirleyemez;
+KMK'ya göre işletme projesine itiraz ve demirbaş giderlerini ev sahibine
+yansıtma hakkı var; yorumlara AİDAT yaz."
+
+| Dosya | İçerik |
+| :-- | :-- |
+| `src/aidat2/zamanlama.ts` | Kelime kareleri (`an()`), sahne sınırları, sarsıntı ve yay yardımcıları |
+| `src/aidat2/sahneler.tsx` | 5 sahne: Hook (kira/aidat yarışı) → Yönetim → 1. Hak → 2. Hak → CTA |
+| `src/aidat2/video.tsx` | Kompozisyon kökü (altyazı, Robot Tu, sesler) |
+| `src/aidat2/kelimeler.json` | Kelime başlangıç/bitiş saniyeleri |
+| `src/aidat2/genlik.json` | 30 fps ses zarfı (Robot Tu ağzı) |
+| `public/aidat2_ses.wav` | Seslendirme (18,57 sn konuşma + esler, 6. karede başlar) |
+| `public/aidat_sfx.wav` | Müzik yatağı (mevcut dosya yeniden kullanıldı) |
+| `ciktilar/fahis-aidat-itiraz-kisa-reel.mp4` | Render çıktısı (20,42 sn) |
+| `ciktilar/fahis-kisa-aciklama.txt`, `fahis-kisa-ilk-yorum.txt` | Paylaşım metinleri (DM metni: `aidat-dm.txt`) |
+
+Seslendirme + zamanlama üretimi tek komutla yeniden yapılabilir:
+
+```bash
+# cümle cümle TTS dosyaları /tmp/tts/01.mp3 ... 05.mp3 olarak üretildikten sonra
+python3 scripts/ses-hazirla.py
+```
+
+`ses-hazirla.py` cümleleri kırpıp aralarına es koyarak birleştirir, kelime
+sınırlarını hece ağırlığıyla dağıtıp sesin enerji çukurlarına yapıştırır ve
+`kelimeler.json` + `genlik.json` dosyalarını yazar. Yeni bir reels için
+`CUMS`, `ARALAR`, `TOPLAM_KARE` ve `SES_ON_EK` değerlerini değiştirmek yeterli.
+
+Notlar:
+- Altyazı şeridi ve Robot Tu artık parametrik: `src/bilesenler/Altyazi.tsx` ve
+  `src/bilesenler/Robot.tsx`. `Ortak.tsx` bunları e-devlet reels'i için sarmalar;
+  mevcut iki video bu değişiklikten etkilenmez.
+- Sahneler `Sequence` içinde çalıştığı için kelime kilitleri `baslangic` prop'u
+  ile global kareye çevrilir (`frame = yerelKare + baslangic`); damgalara
+  `mevcutKare={frame}` verilir.

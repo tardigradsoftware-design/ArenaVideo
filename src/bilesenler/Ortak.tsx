@@ -1,7 +1,9 @@
 import React from "react";
 import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
-import { FONT_BASLIK, KART_STIL, RENK } from "../tema";
+import { FONT_BASLIK, RENK } from "../tema";
 import { GRUP, KELIMELER, SAHNE_SINIRLARI, sesGenligi, yay } from "../zamanlama";
+import { AltyaziSeridi } from "./Altyazi";
+import { RobotTuGovde } from "./Robot";
 
 /**
  * Beyaz kâğıt zemin + sürekli hafif kayan nokta deseni
@@ -139,93 +141,20 @@ export const Damga: React.FC<{
 };
 
 /**
- * Alt-ortada iki kelime iki kelime akan, okunan kelimeyi vurgulayan altyazı
+ * E-devlet ("PARA") reelsinin altyazı şeridi — zamanlaması kendi verisinden.
  */
-export const Altyazi: React.FC = () => {
-  const frame = useCurrentFrame();
-
-  const aktifIndex = KELIMELER.findIndex((k, j) => {
-    const sonrakiBas = KELIMELER[j + 1]
-      ? Math.min(KELIMELER[j + 1].fs - 1, k.fe + 14)
-      : k.fe + 18;
-    return frame >= k.fs - 1 && frame < sonrakiBas;
-  });
-
-  if (aktifIndex < 0) return null;
-
-  const grupBasi = GRUP[aktifIndex];
-  const grupSonu = GRUP.lastIndexOf(grupBasi);
-  const kelimeler = KELIMELER.slice(grupBasi, grupSonu + 1);
-
-  const toplamUzunluk = kelimeler.map((k) => k.w).join(" ").length;
-  const fontBoyu = toplamUzunluk > 20 ? 38 : toplamUzunluk > 15 ? 45 : 54;
-
-  return (
-    <div
-      style={{
-        position: "absolute",
-        top: 1252,
-        left: 64,
-        right: 64,
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        gap: 16,
-        flexWrap: "nowrap",
-        zIndex: 40,
-        pointerEvents: "none",
-      }}
-    >
-      {kelimeler.map((k, idx) => {
-        const globalIdx = grupBasi + idx;
-        const okunuyor = globalIdx === aktifIndex;
-        const temiz = k.w.replace(/[.,!?;:]+$/g, "").toLocaleUpperCase("tr-TR");
-        const pop = okunuyor
-          ? interpolate(
-              Math.min(6, Math.max(0, frame - k.fs)),
-              [0, 2, 6],
-              [0.92, 1.07, 1.0],
-            )
-          : 1;
-
-        return (
-          <span
-            key={`${globalIdx}-${k.w}`}
-            style={{
-              display: "inline-block",
-              fontFamily: FONT_BASLIK,
-              fontWeight: 900,
-              fontSize: fontBoyu,
-              letterSpacing: "-0.035em",
-              lineHeight: 1.05,
-              padding: "10px 22px 13px",
-              borderRadius: 20,
-              border: `6px solid ${RENK.siyah}`,
-              backgroundColor: okunuyor ? RENK.turuncu : RENK.zemin,
-              color: okunuyor ? "#FFFFFF" : RENK.siyah,
-              boxShadow: okunuyor
-                ? `8px 8px 0px ${RENK.siyah}`
-                : `6px 6px 0px ${RENK.siyah}`,
-              transform: `scale(${pop})`,
-            }}
-          >
-            {temiz}
-          </span>
-        );
-      })}
-    </div>
-  );
-};
+export const Altyazi: React.FC = () => (
+  <AltyaziSeridi kelimeler={KELIMELER} grup={GRUP} />
+);
 
 /**
- * Robot Tu: Sağ altta gövdesiz yüzen kafa + havada süzülen eller,
- * sese göre açılıp kapanan ağız ve sahneye göre değişen ifade.
+ * E-devlet reelsinin Robot Tu maskotu — ses zarfı ve sahne numarası
+ * bu kompozisyonun zamanlama dosyasından beslenir.
  */
 export const RobotTu: React.FC = () => {
   const frame = useCurrentFrame();
   const genlik = sesGenligi(frame);
 
-  // Hangi sahnedeyiz? (0..5)
   const sahneNo =
     frame < SAHNE_SINIRLARI.s2
       ? 1
@@ -239,149 +168,5 @@ export const RobotTu: React.FC = () => {
               ? 5
               : 6;
 
-  const salinimY = Math.sin(frame * 0.14) * 7;
-  const elSolY = Math.sin(frame * 0.18 + 0.8) * 10;
-  const elSagY = Math.cos(frame * 0.18 + 0.3) * 10;
-  const kafaEgim = Math.sin(frame * 0.09) * 3 + (sahneNo === 4 ? -4 : 0);
-  const agizYukseklik = Math.round(6 + genlik * 24);
-  const agizGenislik = Math.round(28 + genlik * 14);
-  const gozKirpma = frame % 95 >= 91 ? 0.15 : 1;
-
-  // Sahneye göre anten rengi
-  const antenRenk =
-    sahneNo === 4
-      ? RENK.turuncu
-      : sahneNo === 5 || sahneNo === 6
-        ? RENK.sari
-        : RENK.sari;
-
-  return (
-    <div
-      style={{
-        position: "absolute",
-        right: 68,
-        top: 1388,
-        width: 190,
-        height: 165,
-        zIndex: 35,
-        pointerEvents: "none",
-      }}
-    >
-      {/* Sol süzülen el */}
-      <div
-        style={{
-          position: "absolute",
-          left: 2,
-          top: 76 + elSolY + (sahneNo === 5 ? -18 : 0),
-          width: 34,
-          height: 34,
-          borderRadius: 17,
-          backgroundColor: RENK.zemin,
-          border: `5px solid ${RENK.siyah}`,
-          boxShadow: `5px 5px 0px ${RENK.siyah}`,
-        }}
-      />
-
-      {/* Sağ süzülen el */}
-      <div
-        style={{
-          position: "absolute",
-          right: 2,
-          top: 72 + elSagY - (sahneNo === 6 ? 16 : 0),
-          width: 34,
-          height: 34,
-          borderRadius: 17,
-          backgroundColor: sahneNo === 5 || sahneNo === 6 ? RENK.sari : RENK.zemin,
-          border: `5px solid ${RENK.siyah}`,
-          boxShadow: `5px 5px 0px ${RENK.siyah}`,
-        }}
-      />
-
-      {/* Yüzen Kafa */}
-      <div
-        style={{
-          ...KART_STIL,
-          position: "absolute",
-          left: 36,
-          top: 22 + salinimY,
-          width: 118,
-          height: 104,
-          borderRadius: 28,
-          border: `6px solid ${RENK.siyah}`,
-          boxShadow: `9px 9px 0px ${RENK.siyah}`,
-          transform: `rotate(${kafaEgim}deg)`,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: RENK.zemin,
-        }}
-      >
-        {/* Anten */}
-        <div
-          style={{
-            position: "absolute",
-            top: -24,
-            left: "50%",
-            transform: "translateX(-50%)",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <div
-            style={{
-              width: 18,
-              height: 18,
-              borderRadius: 9,
-              backgroundColor: antenRenk,
-              border: `4px solid ${RENK.siyah}`,
-            }}
-          />
-          <div
-            style={{
-              width: 5,
-              height: 8,
-              backgroundColor: RENK.siyah,
-            }}
-          />
-        </div>
-
-        {/* Göz ekranı */}
-        <div
-          style={{
-            display: "flex",
-            gap: 20,
-            alignItems: "center",
-            marginTop: 4,
-          }}
-        >
-          {[0, 1].map((g) => (
-            <div
-              key={g}
-              style={{
-                width: 16,
-                height: sahneNo === 4 ? 18 : 16,
-                borderRadius: 8,
-                backgroundColor: RENK.siyah,
-                transform: `scaleY(${gozKirpma})`,
-              }}
-            />
-          ))}
-        </div>
-
-        {/* Sese duyarlı ağız */}
-        <div
-          style={{
-            marginTop: 12,
-            width: agizGenislik,
-            height: agizYukseklik,
-            borderRadius: 12,
-            backgroundColor: genlik > 0.2 ? RENK.turuncu : RENK.siyah,
-            border: `3px solid ${RENK.siyah}`,
-          }}
-        />
-      </div>
-    </div>
-  );
+  return <RobotTuGovde sahneNo={sahneNo} genlik={genlik} />;
 };
