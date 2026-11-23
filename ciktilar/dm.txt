@@ -1,0 +1,14 @@
+Tetikleyici Kelime: PARA
+
+Selam! 👋 İstediğin e-Devlet Unutulan Paraları Sorgulama ve Hesaba Çekme Rehberi hazır:
+
+1️⃣ SGK Şahıs Ödemeleri Sorgulama:
+e-Devlet arama çubuğuna "Şahıs Ödemeleri Sorgulama" yazarak adına bekleyen ilaç, muayene veya rapor ödemesi olup olmadığını gör. Varsa "Şahıs Ödemeleri Banka Hesabı Tanımlama" ekranından kendi IBAN'ını kaydet.
+
+2️⃣ Otomatik BES (Takasbank) Sorgulama:
+Arama çubuğuna "Takasbank Bireysel Emeklilik" yazarak eski işyerlerinden adına açılmış ve unutulmuş kesinti/birikim olup olmadığını kontrol et.
+
+3️⃣ Sigorta & Vergi İadeleri:
+"Dijital Vergi Dairesi İade Sorgulama" ekranından adına kayıtlı iade alacaklarını incele.
+
+Takıldığın bir adım olursa buradan yazabilirsin! 🙌

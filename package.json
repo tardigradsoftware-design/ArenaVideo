@@ -1,0 +1,47 @@
+{
+  "name": "edevlet-para-reel",
+  "version": "1.0.0",
+  "description": "My Remotion video",
+  "repository": {},
+  "license": "UNLICENSED",
+  "engines": {
+    "node": "^20.19.0 || ^22.13.0 || >=24"
+  },
+  "private": true,
+  "dependencies": {
+    "@fontsource/jetbrains-mono": "^5.3.0",
+    "@fontsource/unbounded": "^5.3.0",
+    "@remotion/cli": "4.0.546",
+    "@remotion/fonts": "^4.0.546",
+    "@remotion/google-fonts": "^4.0.546",
+    "@remotion/shapes": "^4.0.546",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "remotion": "4.0.546"
+  },
+  "devDependencies": {
+    "@expo-google-fonts/noto-color-emoji": "^0.4.8",
+    "@remotion/eslint-config-flat": "4.0.546",
+    "@sparticuz/chromium": "^153.0.0",
+    "@types/react": "19.3.0",
+    "@types/web": "0.0.166",
+    "eslint": "10.15.0",
+    "prettier": "3.8.1",
+    "typescript": "5.9.3"
+  },
+  "scripts": {
+    "dev": "remotion studio",
+    "build": "remotion bundle",
+    "upgrade": "remotion upgrade",
+    "lint": "eslint src && tsc",
+    "setup": "node scripts/fontlar.mjs && node -e \"import('./scripts/chrome.mjs').then(m=>m.chromeHazirla()).then(()=>console.log('✓ Chromium hazır'))\"",
+    "postinstall": "node scripts/fontlar.mjs",
+    "kare": "node scripts/remotion-komut.mjs still src/index.ts",
+    "render": "node scripts/remotion-komut.mjs render src/index.ts",
+    "render:edevlet": "node scripts/remotion-komut.mjs render src/index.ts EdevletParaReel ciktilar/edevlet-unutulan-para-reel.mp4 --concurrency=2",
+    "render:aidat": "node scripts/remotion-komut.mjs render src/index.ts AidatReel ciktilar/fahis-aidat-itiraz-reel.mp4 --concurrency=2"
+  },
+  "allowScripts": {
+    "esbuild": false
+  }
+}
