@@ -27,6 +27,7 @@ SES_ON_EK = "aidat2"        # public/aidat2_ses.wav
 HEDEF_DIZIN = "src/aidat2"  # kelimeler.json + genlik.json
 TTS_DIZIN = "/tmp/tts"
 ARALAR = [0.18, 0.35, 0.14, 0.50]  # cümleler arası esler (sn)
+HEDEF_RMS_DB = -19.5               # her cümle aynı ses seviyesine getirilir
 
 CUMS = [
     "Oturduğun sitede aidatlar kirayla yarışır hale geldiyse",
@@ -52,6 +53,17 @@ def kirp(d):
     esik = max(pen) * 0.06
     aktif = [k for k, p in enumerate(pen) if p > esik]
     return s[aktif[0] * w:(aktif[-1] + 1) * w]
+
+
+def ses_esitle(pcm, hedef_db=HEDEF_RMS_DB):
+    """TTS klipleri arasındaki seviye farkını giderir (tepe sınırı korunarak)."""
+    rms = math.sqrt(sum(v * v for v in pcm) / len(pcm)) or 1
+    hedef = (10 ** (hedef_db / 20)) * 32768
+    kazanc = hedef / rms
+    tepe = max(abs(v) for v in pcm) or 1
+    if tepe * kazanc > 32000:
+        kazanc = 32000 / tepe
+    return [max(-32768, min(32767, int(v * kazanc))) for v in pcm], kazanc
 
 
 def hece(kelime):
@@ -85,10 +97,12 @@ def cukura_yapistir(zarf, t, tolerans=0.12):
 
 
 def main():
-    parcalar = [
-        kirp(miniaudio.decode_file(os.path.join(TTS_DIZIN, f"{i:02d}.mp3")))
-        for i in range(1, len(CUMS) + 1)
-    ]
+    parcalar = []
+    for i in range(1, len(CUMS) + 1):
+        p = kirp(miniaudio.decode_file(os.path.join(TTS_DIZIN, f"{i:02d}.mp3")))
+        p, kazanc = ses_esitle(p)
+        print(f"  cümle {i:02d}: seviye düzeltmesi x{kazanc:.2f}")
+        parcalar.append(p)
     sureler = [len(p) / NCH / SR for p in parcalar]
 
     hedef = (TOPLAM_KARE - ILK) / FPS

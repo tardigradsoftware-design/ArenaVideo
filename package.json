@@ -39,7 +39,8 @@
     "kare": "node scripts/remotion-komut.mjs still src/index.ts",
     "render": "node scripts/remotion-komut.mjs render src/index.ts",
     "render:edevlet": "node scripts/remotion-komut.mjs render src/index.ts EdevletParaReel ciktilar/edevlet-unutulan-para-reel.mp4 --concurrency=2",
-    "render:aidat": "node scripts/remotion-komut.mjs render src/index.ts AidatReel ciktilar/fahis-aidat-itiraz-reel.mp4 --concurrency=2"
+    "render:aidat": "node scripts/remotion-komut.mjs render src/index.ts AidatReel ciktilar/fahis-aidat-itiraz-reel.mp4 --concurrency=2",
+    "render:fahis": "node scripts/remotion-komut.mjs render src/index.ts FahisAidatItiraz ciktilar/fahis-aidat-itiraz-kisa-reel.mp4 --concurrency=2"
   },
   "allowScripts": {
     "esbuild": false
